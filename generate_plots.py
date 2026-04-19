@@ -119,3 +119,37 @@ def plot_histogram(sensor_a, sensor_b, ax):
     ax.set_title('Temperature Distribution Comparison')
     ax.legend()
     ax.grid(True, alpha=0.3)
+
+# Create plot_boxplot(sensor_a, sensor_b, timestamps, ax) that draws
+# the box plot from the notebook onto the given Axes object.
+# NumPy-style docstring. Modifies ax in place, returns None.
+
+
+def plot_boxplot(sensor_a, sensor_b, ax):
+    """Create side-by-side box plot comparing sensor temperature distributions.
+    
+    Plots side-by-side box plots for temperature readings from two sensors with
+    a horizontal dashed line indicating the overall mean of both sensors combined.
+    
+    Parameters
+    ----------
+    sensor_a : ndarray
+        Temperature readings from Sensor A in Celsius. Shape (n,).
+    sensor_b : ndarray
+        Temperature readings from Sensor B in Celsius. Shape (n,).
+    ax : matplotlib.axes.Axes
+        Axes object to modify in place. The box plot is drawn on this object.
+    
+    Returns
+    -------
+    None
+        Modifies the Axes object in place without returning a value.
+    """
+    ax.boxplot([sensor_a, sensor_b], labels=['Sensor A', 'Sensor B'])
+    overall_mean = np.mean(np.concatenate([sensor_a, sensor_b]))
+    ax.axhline(overall_mean, color='red', linestyle='--', linewidth=2, 
+               label=f'Overall Mean: {overall_mean:.2f}°C')
+    ax.set_ylabel('Temperature (deg C)')
+    ax.set_title('Sensor Temperature Distribution Comparison')
+    ax.legend()
+    ax.grid(True, alpha=0.3, axis='y')
