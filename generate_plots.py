@@ -163,8 +163,8 @@ def main():
     """Generate sensor data and create publication-quality visualizations.
     
     Creates synthetic temperature sensor data and produces three publication-quality
-    plots (scatter, histogram, and box plot) saved as a PNG file. The plots are
-    arranged in a 1x3 subplot grid and saved with tight bounding box at 150 DPI.
+    plots (scatter, histogram, and box plot) arranged in a 2x2 subplot grid with
+    summary statistics in the fourth cell. Saved as PNG with tight bounding box at 150 DPI.
     
     Returns
     -------
@@ -175,13 +175,40 @@ def main():
     # Generate synthetic data with seed for reproducibility
     sensor_a, sensor_b, timestamps = generate_data(seed=42)
     
-    # Create figure with 1x3 subplots
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    # Create figure with 2x2 subplots
+    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    
+    # Flatten axes for easier indexing
+    axes_flat = axes.flatten()
     
     # Create each plot on its corresponding axis
-    plot_scatter(sensor_a, sensor_b, timestamps, axes[0])
-    plot_histogram(sensor_a, sensor_b, axes[1])
-    plot_boxplot(sensor_a, sensor_b, axes[2])
+    plot_scatter(sensor_a, sensor_b, timestamps, axes_flat[0])
+    plot_histogram(sensor_a, sensor_b, axes_flat[1])
+    plot_boxplot(sensor_a, sensor_b, axes_flat[2])
+    
+    # Add summary statistics in the fourth subplot
+    stats_ax = axes_flat[3]
+    stats_ax.axis('off')
+    
+    # Calculate statistics
+    stats_text = (
+        "Summary Statistics\n"
+        "─" * 30 + "\n\n"
+        f"Sensor A:\n"
+        f"  Mean: {np.mean(sensor_a):.2f}°C\n"
+        f"  Std Dev: {np.std(sensor_a):.2f}°C\n"
+        f"  Min: {np.min(sensor_a):.2f}°C\n"
+        f"  Max: {np.max(sensor_a):.2f}°C\n\n"
+        f"Sensor B:\n"
+        f"  Mean: {np.mean(sensor_b):.2f}°C\n"
+        f"  Std Dev: {np.std(sensor_b):.2f}°C\n"
+        f"  Min: {np.min(sensor_b):.2f}°C\n"
+        f"  Max: {np.max(sensor_b):.2f}°C"
+    )
+    
+    stats_ax.text(0.1, 0.5, stats_text, transform=stats_ax.transAxes,
+                  fontsize=10, verticalalignment='center', family='monospace',
+                  bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
     
     # Adjust layout and save
     plt.tight_layout()
